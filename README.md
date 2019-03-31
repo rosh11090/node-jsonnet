@@ -1,54 +1,21 @@
-node-jsonnet
-=====================
+# node-jsonnet
 
-[![Build Status](https://travis-ci.org/yosuke-furukawa/node-jsonnet.svg?branch=master)](https://travis-ci.org/yosuke-furukawa/node-jsonnet)
-
-[jsonnet](http://google.github.io/jsonnet/doc/index.html) is a DSL for JSON. Jsonnet is created by Google.
+[jsonnet](https://jsonnet.org/) is a DSL for JSON. Jsonnet is created by Google.
 
 This module is a Jsonnet wrapper for Node.js
 
-Jsonnet demo
----------------------
+## Docs
+To know about jsonnet syntax, read [here](https://jsonnet.org/learning/tutorial.html).
 
-before:
+In case of jsonnet standard library, read [here](https://jsonnet.org/ref/stdlib.html).
 
-```json
-// Jsonnet Example
-{
-    person1: {
-        name: "Alice",
-        welcome: "Hello " + self.name + "!",
-    },
-    person2: self.person1 { name: "Bob" },
-}
-```
-
-after:
-
-```json
-{
-   "person1": {
-      "name": "Alice",
-      "welcome": "Hello Alice!"
-   },
-   "person2": {
-      "name": "Bob",
-      "welcome": "Hello Bob!"
-   }
-}
-```
-
-If you would like to know more Jsonnet syntax, read here.
-
-[http://google.github.io/jsonnet/doc/spec.html](http://google.github.io/jsonnet/doc/spec.html)
-
-How to use
---------------------
+## For Setup
 
 ```shell
-$ npm install jsonnet --save
+$ npm install https://github.com/rosh11090/node-jsonnet#v0.5.0
 ```
 
+## Usage
 ```javascript
 
 var Jsonnet = require('jsonnet');
@@ -56,10 +23,38 @@ var Jsonnet = require('jsonnet');
 var jsonnet = new Jsonnet();
 var fs = require('fs');
 
-var code = fs.readFileSync("./menu.jsonnet");
+var code = fs.readFileSync("./menu.jsonnet", "utf8");
 
 // eval jsonnet to javascript object
 var result = jsonnet.eval(code);
 
-console.log(result);
+
+// or directly render file
+var result = jsonnet.evalFile("./menu.jsonnet");
+
+console.log("result>", result)
+
 ```
+
+Both function(eval, evalFile) take optional argument tla object({}) with key/attribute as,
+```
+let ext_var = {key1: "value"}  // => {"key_value": std.excVar("key1")}
+
+let ext_code = {key2: false}  //=> {"key_value": std.excVar("key2")}
+
+let tla_str = {key1: "value"}  //=> function(key1){...jsonnet..}
+
+let tla_code = {key2: true}  // =>  function(key2){...jsonnet code..}
+
+jsonnet.evalFile("./menu.jsonnet", {ext_var: ext_var, tla_str: tla_str})
+```
+
+Check [here](https://jsonnet.org/learning/tutorial.html#parameterize-entire-config) for prametrized config.
+
+## Authors
+* forked from [here](https://github.com/yosuke-furukawa/node-jsonnet).
+* **Roshan** - *Initial update work* - [Noon](https://github.com/rosh11090)
+
+## Acknowledgments
+* Uses [jsonnet](https://jsonnet.org/js/libjsonnet.js) library from google.
+* Extended work of [Yosuke Furukawa](https://github.com/yosuke-furukawa).
